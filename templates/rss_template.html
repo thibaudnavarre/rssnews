@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <title>IT News</title>
+    <script>
+      function getRandomBackground() {
+        var randomNumber = Math.floor(Math.random() * 9) + 1;
+        return(randomNumber)
+      }
+    </script>
+  </head>
+  <body>
+    <div id="carousel" class="carousel slide" data-interval="false" data-ride="carousel">
+      <ol class="carousel-indicators">
+        {% for post in posts %}
+          {% if loop.index == 1 %}
+          <li data-target="#carousel" data-slide-to="{{loop.index - 1}}" class="active"></li>
+          {% else %}
+          <li data-target="#carousel" data-slide-to="{{loop.index - 1}}"></li>
+          {% endif %}
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner">
+        {% for post in posts %}
+          {% if loop.index == 1 %}
+          <div class="carousel-item active background1">
+            <h2>{{ post.title }}</h2>
+            <div class="content">{{ post.content }}</div>
+            <p class="tip">To learn more scan this QRCode</p>
+            <img class="qrcode" src="{{ post.qrcode }}">
+          </div>
+          {% else %}
+          <div class="carousel-item background{{loop.index}}">
+            <h2>{{ post.title }}</h2>
+            <div class="content">{{ post.content }}</div>
+            <p class="tip">To learn more scan this QRCode</p>
+            <img class="qrcode" src="{{ post.qrcode }}">
+            <!--<strong>{{ post.published }}</strong>-->
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="progress progress-perso">
+        <div id="myBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuenow="0" aria-valuemax="100"></div>
+      </div>
+      <script>
+        $(function() {
+          var current_progress = 0;
+          var ms = 60000;
+          var interval = setInterval(function() {
+            current_progress += 0.417;
+            ms -= 250;
+            $("#myBar")
+            .css("width", current_progress + "%")
+            .attr("aria-valuenow", current_progress)
+            .text(Math.round(ms/1000) + " seconds");
+            if (current_progress >= 100) {
+              $("myBar").css("width", 0 + "%")
+              $("aria-valuenow", 0)
+              $('.carousel').carousel("next");
+              ms = 60000;
+              current_progress = 0;
+            }
+          }, 250);
+        });
+      </script>
+    </div>
+    <script>
+      $('.carousel').carousel();
+    </script>
+  </body>
+</html>
